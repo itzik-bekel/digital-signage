@@ -2,7 +2,7 @@ const Display = require('../models/Display')
 const CommonHelper = require('./common_helper')
 
 function addWidget(req, res) {
-  let widget = req.crudify.result
+  let widget = (req.crudify && req.crudify.result) || req.widget
   return Display.findById(widget.display)
     .then(display => {
       if (!display) return res.status(404).json({ error: 'Display not found' })
@@ -16,7 +16,7 @@ function addWidget(req, res) {
 }
 
 function deleteWidget(req, res) {
-  let widget = req.crudify.result
+  let widget = (req.crudify && req.crudify.result) || req.widget
   return Display.findById(widget.display).then(display => {
     if (!display) return res.status(404).json({ error: 'Display not found' })
     display.widgets = display.widgets.filter(function(value) {

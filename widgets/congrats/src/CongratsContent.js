@@ -5,7 +5,8 @@
  */
 
 import React, { Component } from 'react'
-import Lottie from 'react-lottie'
+import dynamic from 'next/dynamic'
+const Lottie = dynamic(() => import('react-lottie'), { ssr: false })
 import { config } from '@fortawesome/fontawesome-svg-core'
 import AutoScroll from '../../../components/AutoScroll'
 
