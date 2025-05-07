@@ -11,14 +11,34 @@ function deleteWidgets(widgets, res) {
 }
 
 async function newDisplay(req) {
-  const count = await Display.estimatedDocumentCount()
-  const newDisplay = new Display({
-    name: req.body.name || 'Display #' + (count + 1)
-  })
-  return newDisplay.save()
+  try {
+    const count = await Display.estimatedDocumentCount()
+    const newDisplay = new Display({
+      name: (req && req.body && req.body.name) || 'Display #' + (count + 1)
+    })
+    return newDisplay.save()
+  } catch (error) {
+    console.error('Error creating display:', error)
+    return null
+  }
+}
+
+async function ensureDefaultDisplay() {
+  try {
+    const count = await Display.countDocuments()
+    if (count === 0) {
+      console.log('Creating default display...')
+      return newDisplay()
+    }
+    return null
+  } catch (error) {
+    console.error('Error ensuring default display:', error)
+    return null
+  }
 }
 
 module.exports = {
   deleteWidgets,
-  newDisplay
+  newDisplay,
+  ensureDefaultDisplay
 }

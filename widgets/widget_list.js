@@ -1,2 +1,2 @@
 module.exports = ['slideshow', 'weather', 'congrats', 'youtube', 'web', 
-    'image', 'list', 'announcement']
+    'image', 'list', 'announcement', 'rss']

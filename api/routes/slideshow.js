@@ -6,6 +6,15 @@ const Slideshow = require('../models/Slideshow')
 const SlideshowHelper = require('../helpers/slideshow_helper')
 const CommonHelper = require('../helpers/common_helper')
 
+// Middleware to validate ObjectId
+const validateObjectId = (req, res, next) => {
+  const { id } = req.params
+  if (!id || id === 'undefined') {
+    return res.status(400).json({ error: 'Invalid slideshow ID' })
+  }
+  next()
+}
+
 // Route: /api/v1/slideshow
 router
   .get('/', (req, res, next) => {
@@ -32,6 +41,7 @@ router
   })
 
 // Route: /api/v1/slideshow/:id
+router.use('/:id', validateObjectId)
 router
   .get('/:id', (req, res, next) => {
     const { id } = req.params
