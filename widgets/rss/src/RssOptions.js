@@ -58,7 +58,8 @@ const RssOptions = ({ data = {}, onChange = () => {} }) => {
     itemsToShow = 5,
     textColor = '#ffffff',
     backgroundColor = '#2d3436',
-    fontSize = 16
+    fontSize = 36,
+    widgetHeight = 100
   } = data
 
   return (
@@ -90,6 +91,12 @@ const RssOptions = ({ data = {}, onChange = () => {} }) => {
         label="Background Color"
         color={backgroundColor}
         onChange={color => onChange({ ...data, backgroundColor: color })}
+      />
+      <Input
+        type="number"
+        label="Widget Height (px)"
+        value={widgetHeight}
+        onChange={value => onChange({ ...data, widgetHeight: parseInt(value) })}
       />
     </Form>
   )

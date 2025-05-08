@@ -2,10 +2,10 @@ import React from 'react'
 import axios from 'axios'
 import AutoScroll from '../../../components/AutoScroll'
 
-const DEFAULT_UPDATE_INTERVAL = 300000 // 5 minutes
+const DEFAULT_UPDATE_INTERVAL = 60000 // 1 minute
 const DEFAULT_ITEMS_TO_SHOW = 5
 const CORS_PROXY = 'https://api.allorigins.win/raw?url='
-const RSS_URL = 'https://www.ynet.co.il/Integration/StoryRss2.xml'
+const RSS_URL = 'https://www.ynet.co.il/Integration/StoryRss1854.xml'
 
 class RssContent extends React.Component {
   constructor(props) {
@@ -26,9 +26,7 @@ class RssContent extends React.Component {
       const newsItems = Array.from(items)
         .slice(0, itemsToShow)
         .map(item => ({
-          title: (item.querySelector('title') || {}).textContent,
-          description: (item.querySelector('description') || {}).textContent,
-          link: (item.querySelector('link') || {}).textContent
+          title: (item.querySelector('title') || {}).textContent
         }))
       this.setState({ news: newsItems })
     } catch (error) {
@@ -54,46 +52,75 @@ class RssContent extends React.Component {
     const {
       textColor = '#ffffff',
       backgroundColor = '#2d3436',
-      fontSize = 16
+      fontSize = 16,
+      widgetHeight = 100
     } = data
     const { news } = this.state
 
     return (
-      <div className="rss-widget">
-        <AutoScroll style={{ display: 'block' }}>
-          {news.map((item, index) => (
-            <div key={index} className="news-item">
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
-            </div>
-          ))}
-        </AutoScroll>
+      <div className="rss-widget" style={{ height: `${widgetHeight}px` }}>
+        <div className="ynet-logo">
+          <img src="https://www.ynet.co.il/images/favicon/favicon_1.ico" alt="Ynet" />
+        </div>
+        <div className="content-wrapper">
+          <AutoScroll style={{ display: 'flex', whiteSpace: 'nowrap', alignItems: 'center', minHeight: '100%' }}>
+            {news.map((item, index) => (
+              <div key={index} className="news-item">
+                <h3>{item.title}</h3>
+              </div>
+            ))}
+          </AutoScroll>
+        </div>
         <style jsx>{`
           .rss-widget {
-            height: 100%;
             width: 100%;
+            position: relative;
             background-color: ${backgroundColor};
             color: ${textColor};
-            padding: 16px;
             font-family: 'Open Sans', sans-serif;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .ynet-logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+          }
+          .ynet-logo img {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+          }
+          .content-wrapper {
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
           .news-item {
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 80px;
+            padding: 0 30px;
+            border-right: 2px solid rgba(255, 255, 255, 0.2);
+            white-space: nowrap;
+            min-height: 100%;
           }
           .news-item:last-child {
-            border-bottom: none;
+            border-right: none;
           }
           h3 {
             font-size: ${fontSize}px;
-            margin: 0 0 10px 0;
-          }
-          p {
-            font-size: ${fontSize - 2}px;
             margin: 0;
-            opacity: 0.8;
+            font-weight: 500;
+            line-height: 1.2;
+            text-align: center;
           }
         `}</style>
       </div>

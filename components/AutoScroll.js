@@ -1,44 +1,54 @@
 import React from 'react'
-import ReactDom from 'react-dom'
-import animateScrollTo from 'animated-scroll-to'
 
 class AutoScroll extends React.Component {
-  constructor(props) {
-    super(props)
-    this.container = React.createRef()
-  }
-
-  componentDidMount() {
-    if (!this.container || !this.container.current) return
-    const containerNode = ReactDom.findDOMNode(this.container.current)
-    if (!containerNode) return
-
-    const { duration = 3000 } = this.props
-    setInterval(() => {
-      animateScrollTo(9999999, {
-        minDuration: duration,
-        element: containerNode
-      })
-      setTimeout(() => {
-        animateScrollTo(0, {
-          minDuration: duration,
-          element: containerNode
-        })
-      }, duration)
-    }, duration)
-  }
-
   render() {
-    const { children, style = {} } = this.props
+    const { children, style = {}, duration = 45 } = this.props
+    const speed = `${duration}s`
+
     return (
-      <div className='container' ref={this.container} style={style}>
-        {children}
+      <div className='scroll-container'>
+        <div className='scroll-content'>
+          {children}
+          {/* Duplicate content for seamless loop */}
+          {children}
+        </div>
         <style jsx>{`
-          .container {
+          .scroll-container {
             display: flex;
             width: 100%;
             height: 100%;
-            overflow: auto;
+            overflow: hidden;
+            position: relative;
+            align-items: center;
+            justify-content: center;
+            ${Object.entries(style)
+              .map(([key, value]) => `${key}: ${value};`)
+              .join('\n')}
+          }
+          
+          .scroll-content {
+            display: flex;
+            flex-direction: row;
+            position: absolute;
+            white-space: nowrap;
+            will-change: transform;
+            animation: scroll ${speed} linear infinite;
+            align-items: center;
+            min-height: 100%;
+          }
+
+          @keyframes scroll {
+            0% {
+              transform: translateX(5%);
+            }
+            100% {
+              transform: translateX(-45%);
+            }
+          }
+
+          /* Pause animation on hover */
+          .scroll-container:hover .scroll-content {
+            animation-play-state: paused;
           }
         `}</style>
       </div>
