@@ -6,4 +6,4 @@ for (const widget of widgetList) {
   widgets[widget] = new WidgetClass()
 }
 
-module.exports = widgets
+export default widgets

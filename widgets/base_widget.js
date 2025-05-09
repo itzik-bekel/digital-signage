@@ -1,9 +1,9 @@
-import EmptyWidget from '../components/Widgets/EmptyWidget'
-import EmptyWidgetOptions from '../components/Widgets/EmptyWidgetOptions'
+const EmptyWidget = require('../components/Widgets/EmptyWidget').default
+const EmptyWidgetOptions = require('../components/Widgets/EmptyWidgetOptions').default
 
 const REQUIRED_DEF_FIELDS = ['name', 'version', 'icon']
 
-export default class BaseWidget {
+class BaseWidget {
   constructor(definition) {
     for (const reqField of REQUIRED_DEF_FIELDS) {
       if (!(reqField in definition)) {
@@ -23,3 +23,5 @@ export default class BaseWidget {
     return EmptyWidgetOptions
   }
 }
+
+module.exports = BaseWidget

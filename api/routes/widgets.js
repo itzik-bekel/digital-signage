@@ -29,6 +29,7 @@ router.get('/:id', async (req, res) => {
 // Create widget
 router.post('/', async (req, res) => {
   try {
+    console.log('Widget creation request body:', req.body) // Log the request body
     const widget = await Widget.create(req.body)
     if (!widget) {
       return res.status(500).json({ error: 'Widget creation failed' })
@@ -36,6 +37,7 @@ router.post('/', async (req, res) => {
     req.widget = widget
     return WidgetHelper.addWidget(req, res)
   } catch (error) {
+    console.error('Error during widget creation:', error.message) // Log the error
     res.status(500).json({ error: error.message })
   }
 })
