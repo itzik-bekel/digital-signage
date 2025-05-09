@@ -1,33 +1,33 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 const WeatherContent = () => {
-  const [weatherData, setWeatherData] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const containerRef = useRef(null)
 
   useEffect(() => {
-    const fetchWeatherData = async () => {
-      try {
-        const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=32.0853&longitude=34.7818&current_weather=true')
-        const data = await response.json()
-        setWeatherData(data.current_weather)
-        setLoading(false)
-      } catch (error) {
-        console.error('Error fetching weather data:', error)
-        setLoading(false)
+    // Create widget container
+    const widget = document.createElement('a')
+    widget.className = 'weatherwidget-io'
+    widget.href = 'https://forecast7.com/he/31d9734d79/rishon-letsiyon/'
+    widget.setAttribute('data-label_1', 'חיל החימוש 20')
+    widget.setAttribute('data-label_2', 'מזג אוויר')
+    widget.setAttribute('data-theme', 'original')
+    widget.textContent = 'חיל החימוש 20 מזג אוויר'
+
+    // Add widget to container
+    containerRef.current.appendChild(widget)
+
+    // Load widget script
+    const script = document.createElement('script')
+    script.src = 'https://weatherwidget.io/js/widget.min.js'
+    script.id = 'weatherwidget-io-js'
+    script.async = true
+
+    const initWidget = () => {
+      if (window.__weatherwidget_init) {
+        window.__weatherwidget_init()
       }
     }
 
-    fetchWeatherData()
-  }, [])
-
-  if (loading) {
-    return (
-      <div className="weather-widget">
-        <div className="loading">טוען...</div>
-        <style jsx>{`
-          .weather-widget {
-            width: 100%;
-            height: 100%;
     script.onload = initWidget
     document.body.appendChild(script)
 
