@@ -10,7 +10,7 @@ const WeatherContent = () => {
     widget.href = 'https://forecast7.com/he/31d9734d79/rishon-letsiyon/'
     widget.setAttribute('data-label_1', 'חיל החימוש 20')
     widget.setAttribute('data-label_2', 'מזג אוויר')
-    widget.setAttribute('data-theme', 'gray')
+    widget.setAttribute('data-theme', 'sky')
     widget.textContent = 'חיל החימוש 20 מזג אוויר'
 
     // Add widget to container

@@ -3,7 +3,6 @@ import React from 'react'
 const AnnouncementContent = () => {
   const now = new Date()
 
-  // Hebrew date + time (no seconds)
   const date = new Intl.DateTimeFormat('he-IL', {
     weekday: 'long',
     day: 'numeric',
@@ -19,83 +18,106 @@ const AnnouncementContent = () => {
 
   return (
     <div className="widget">
-      {/* time + date pill */}
-      <div className="pill">
-        <span className="clock">{time}</span>
-        <span className="calendar">{date}</span>
+      {/* background image */}
+      <div className="background-wrapper">
+        <div className="background"></div>
       </div>
 
-      {/* welcome headline centred horizontally */}
-      <h1 className="headline">ברוכים הבאים לחיל החימוש&nbsp;20</h1>
+      {/* top banner */}
+      <header className="banner">
+        <div className="left">
+          <span className="time">{time}</span>
+          <span className="date">{date}</span>
+        </div>
 
-      {/* icon */}
-      <img
-        src="https://example.com/cool-icon.png"
-        alt="icon"
-        className="icon"
-      />
+        <h1 className="headline">ברוכים הבאים לחיל החימוש 20</h1>
+
+        <div className="right">
+          <img
+            src="https://th.bing.com/th/id/OIP.vL-OqvfwluEegJV6KunAugHaHa?w=188&h=187&c=7&r=0&o=5&pid=1.7"
+            alt="icon"
+            className="icon"
+          />
+        </div>
+      </header>
+
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@500;800&display=swap');
+      `}</style>
 
       <style jsx>{`
         .widget {
-          position: relative;
           width: 100%;
           height: 100%;
-          min-height: 220px;
-          background: radial-gradient(circle at top left,#e3e7ff 0%,#c5d3ff 40%,#edf0ff 100%);
           border-radius: 12px;
-          box-shadow: 0 4px 10px rgba(118, 142, 189, 0.15);
           overflow: hidden;
-          font-family: 'Segoe UI', 'Open Sans', sans-serif;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+          font-family: 'Heebo', sans-serif;
+          position: relative;
         }
 
-        /* pill with time/date */
-        .pill{
+        .background-wrapper {
           position: absolute;
-          top: 6px;
-          left: 6px;
-          background: #3059d6;
-          border-radius: 14px;
-          padding: 5px 10px;
-          text-align: center;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 0;
+        }
+
+        .banner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px 14px;
+          background: linear-gradient(90deg,rgb(26, 37, 69) 0%, #00c2ff 100%);
           color: #fff;
-          min-width: 160px;
-          box-shadow: 0 2px 6px rgba(157, 138, 240, 0.25);
-        }
-        .clock{
-          display: block;
-          font-size: 40px;
-          font-weight: 700;
-          line-height: 1;
-          letter-spacing: 1px;
-          font-family: 'Roboto', sans-serif;
-        }
-        .calendar{
-          display: block;
-          margin-top: 4px;
-          font-size: 14px;
-          font-weight: 500;
+          height: 80px;
+          position: relative;
+          z-index: 1;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        /* headline */
-        .headline{
-          position: absolute;
-          top: 6px;
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: 32px;
+        .left {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          min-width: 140px;
+        }
+
+        .time {
+          font-size: 36px;
           font-weight: 800;
-          color:rgb(82, 101, 206);
-          text-shadow: 0 3px 6px rgba(40, 123, 94, 0.2);
-          white-space: nowrap;
+          line-height: 1;
         }
 
-        /* icon top-right */
-        .icon{
-          position: absolute;
-          top: 6px;
-          right: 6px;
-          width: 44px;
-          height: 44px;
+        .date {
+          font-size: 15px;
+          font-weight: 500;
+          margin-top: 2px;
+        }
+
+        .headline {
+          flex: 1;
+          text-align: center;
+          font-size: 36px;
+          font-weight: 900;
+          margin: 2;
+          white-space: nowrap;
+          padding: 0 20px;
+          text-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .right {
+          min-width: 200px;
+          text-align: right;
+        }
+
+        .icon {
+          width: 50px;
+          height: 50px;
+          object-fit: contain;
+          border-radius: 50%;
         }
       `}</style>
     </div>

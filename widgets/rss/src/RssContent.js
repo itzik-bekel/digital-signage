@@ -25,9 +25,18 @@ class RssContent extends React.Component {
       const items = xmlDoc.querySelectorAll('item')
       const newsItems = Array.from(items)
         .slice(0, itemsToShow)
-        .map(item => ({
-          title: (item.querySelector('title') || {}).textContent
-        }))
+        .map(item => {
+          const pubDate = new Date(item.querySelector('pubDate').textContent)
+          const time = pubDate.toLocaleTimeString('he-IL', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          })
+          return {
+            title: item.querySelector('title').textContent,
+            time
+          }
+        })
       this.setState({ news: newsItems })
     } catch (error) {
       console.error('Error fetching RSS:', error)
@@ -67,6 +76,7 @@ class RssContent extends React.Component {
             {news.map((item, index) => (
               <div key={index} className="news-item">
                 <h3>{item.title}</h3>
+                <span className="news-time">{item.time}</span>
               </div>
             ))}
           </AutoScroll>
@@ -114,6 +124,12 @@ class RssContent extends React.Component {
           }
           .news-item:last-child {
             border-right: none;
+          }
+          .news-time {
+            color: #ff0000;
+            font-weight: bold;
+            margin-left: 15px;
+            font-size: ${fontSize}px;
           }
           h3 {
             font-size: ${fontSize}px;
