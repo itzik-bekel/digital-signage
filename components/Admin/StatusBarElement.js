@@ -23,6 +23,21 @@ class StatusBarElement extends React.Component {
   render() {
     const { item, index } = this.props
     const type = item.split('_')[0]
+
+    // Format date and time in Hebrew
+    const now = new Date()
+    const formattedDate = new Intl.DateTimeFormat('he-IL', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }).format(now)
+    const formattedTime = now.toLocaleTimeString('he-IL', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    })
+
     return (
       <Draggable key={item} draggableId={item} index={index}>
         {provided => (
@@ -41,10 +56,23 @@ class StatusBarElement extends React.Component {
               </div>
             </div>
             <div className={'info'}>
-              <div className={'icon'}>
-                <FontAwesomeIcon icon={StatusBarElementTypes[type].icon || faTimes} size={'sm'} />
-              </div>
-              <span className={'type'}>{type || 'Unknown'}</span>
+              {type === 'time' ? (
+                <div className={'time-text'}>
+                  <div>{formattedDate}</div>
+                  <div>{formattedTime}</div>
+                </div>
+              ) : type === 'welcome' ? (
+                <div className={'welcome-text'}>
+                  ברוכים הבאים לחיל החימוש 20
+                </div>
+              ) : (
+                <>
+                  <div className={'icon'}>
+                    <FontAwesomeIcon icon={StatusBarElementTypes[type] && StatusBarElementTypes[type].icon || faTimes} size={'sm'} />
+                  </div>
+                  <span className={'type'}>{type || 'Unknown'}</span>
+                </>
+              )}
             </div>
             <style jsx>
               {`
@@ -66,7 +94,7 @@ class StatusBarElement extends React.Component {
                 }
                 .statusBarEl .info {
                   display: flex;
-                  flex-direction: row;
+                  flex-direction: column;
                   justify-content: center;
                   align-items: center;
                   color: white;
@@ -84,6 +112,20 @@ class StatusBarElement extends React.Component {
                   overflow: hidden;
                   text-overflow: ellipsis;
                   max-width: 100%;
+                }
+                .statusBarEl .info .welcome-text {
+                  font-family: 'Open Sans', sans-serif;
+                  font-size: 18px;
+                  font-weight: bold;
+                  text-align: center;
+                  color: #fff;
+                }
+                .statusBarEl .info .time-text {
+                  font-family: 'Open Sans', sans-serif;
+                  font-size: 16px;
+                  font-weight: bold;
+                  text-align: center;
+                  color: #fff;
                 }
                 .statusBarEl .controls {
                   position: absolute;
