@@ -45,7 +45,7 @@ class Frame extends React.Component {
               flex-direction: column;
               width: 100%;
               height: 100%;
-              background: black;
+              background: rgb(0, 0, 0);
               font-family: Open Sans, sans-serif;
               color: white;
             }
