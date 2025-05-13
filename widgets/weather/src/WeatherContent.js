@@ -10,7 +10,16 @@ const WeatherContent = () => {
     widget.href = 'https://forecast7.com/he/31d9734d79/rishon-letsiyon/'
     widget.setAttribute('data-label_1', 'חיל החימוש 20')
     widget.setAttribute('data-label_2', 'מזג אוויר')
-    widget.setAttribute('data-theme', 'sky')
+    widget.setAttribute('data-theme', 'dark')
+    widget.setAttribute('data-basecolor', 'rgba(0,0,0,0)') // Transparent base for our gradient
+    widget.setAttribute('data-textcolor', '#ffffff')
+    widget.setAttribute('data-highcolor', '#ffffff')
+    widget.setAttribute('data-lowcolor', '#daeaff')
+    widget.setAttribute('data-suncolor', '#fff0a8')
+    widget.setAttribute('data-mooncolor', '#daeaff')
+    widget.setAttribute('data-cloudcolor', '#ffffff')
+    widget.setAttribute('data-raincolor', '#92e5ff')
+    widget.setAttribute('data-snowcolor', '#ffffff')
     widget.textContent = 'חיל החימוש 20 מזג אוויר'
 
     // Add widget to container
@@ -53,6 +62,10 @@ const WeatherContent = () => {
           height: 100%;
           display: flex;
           overflow: hidden;
+          border-radius: 12px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+          background: linear-gradient(90deg, rgb(26, 37, 69) 0%, #00c2ff 100%);
+          font-family: 'Heebo', sans-serif;
         }
 
         :global(.weatherwidget-io) {
@@ -65,6 +78,8 @@ const WeatherContent = () => {
           padding: 0 !important;
           width: 100% !important;
           height: 100% !important;
+          border-radius: 12px !important;
+          overflow: hidden !important;
         }
 
         :global(.weatherwidget-io iframe) {
@@ -76,7 +91,14 @@ const WeatherContent = () => {
           border: 0 !important;
           margin: 0 !important;
           padding: 0 !important;
+          border-radius: 12px !important;
         }
+
+        :global(.weatherwidget-io *) {
+          font-family: 'Heebo', sans-serif !important;
+        }
+
+        :global(@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap'));
       `}</style>
     </div>
   )
