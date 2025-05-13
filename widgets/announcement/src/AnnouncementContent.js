@@ -43,6 +43,26 @@ class AnnouncementContent extends React.Component {
 
   render() {
     const { time, date } = this.state
+    const { data = {} } = this.props
+    const {
+      headline = 'ברוכים הבאים לחיל החימוש 20',
+      iconUrl = 'https://th.bing.com/th/id/OIP.vL-OqvfwluEegJV6KunAugHaHa?w=188&h=187&c=7&r=0&o=5&pid=1.7',
+      gradientStart = 'rgb(26, 37, 69)',
+      gradientEnd = '#00c2ff',
+      textColor = '#ffffff',
+      dateColor = '#ffffff',
+      timeColor = '#ffffff',
+      showIcon = true,
+      showDate = true,
+      textShadow = true,
+      fontSize = {
+        headline: 36,
+        time: 36,
+        date: 15
+      }
+    } = data
+
+    const shadowStyle = textShadow ? '0 4px 4px rgba(0, 0, 0, 0.2)' : 'none'
 
     return (
       <div className="widget">
@@ -53,20 +73,24 @@ class AnnouncementContent extends React.Component {
 
         {/* top banner */}
         <header className="banner">
-          <div className="left">
-            <span className="time">{time}</span>
-            <span className="date">{date}</span>
-          </div>
+          {showDate && (
+            <div className="left">
+              <span className="time">{time}</span>
+              <span className="date">{date}</span>
+            </div>
+          )}
 
-          <h1 className="headline">ברוכים הבאים לחיל החימוש 20</h1>
+          <h1 className="headline">{headline}</h1>
 
-          <div className="right">
-            <img
-              src="https://th.bing.com/th/id/OIP.vL-OqvfwluEegJV6KunAugHaHa?w=188&h=187&c=7&r=0&o=5&pid=1.7"
-              alt="icon"
-              className="icon"
-            />
-          </div>
+          {showIcon && (
+            <div className="right">
+              <img
+                src={iconUrl}
+                alt="icon"
+                className="icon"
+              />
+            </div>
+          )}
         </header>
 
         <style jsx global>{`
@@ -98,8 +122,8 @@ class AnnouncementContent extends React.Component {
             align-items: center;
             justify-content: space-between;
             padding: 8px 14px;
-            background: linear-gradient(90deg,rgb(26, 37, 69) 0%, #00c2ff 100%);
-            color: #fff;
+            background: linear-gradient(90deg, ${gradientStart} 0%, ${gradientEnd} 100%);
+            color: ${textColor};
             height: 80px;
             position: relative;
             z-index: 1;
@@ -110,34 +134,38 @@ class AnnouncementContent extends React.Component {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            min-width: 140px;
+            min-width: ${showDate ? '140px' : '0'};
           }
 
           .time {
-            font-size: 36px;
+            font-size: ${fontSize.time}px;
             font-weight: 800;
             line-height: 1;
+            color: ${timeColor};
+            text-shadow: ${shadowStyle};
           }
 
           .date {
-            font-size: 15px;
+            font-size: ${fontSize.date}px;
             font-weight: 500;
             margin-top: 2px;
+            color: ${dateColor};
+            text-shadow: ${shadowStyle};
           }
 
           .headline {
             flex: 1;
             text-align: center;
-            font-size: 36px;
+            font-size: ${fontSize.headline}px;
             font-weight: 900;
-            margin: 2;
-            white-space: nowrap;
-            padding: 0 20px;
-            text-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+            margin: ${!showDate && !showIcon ? '0' : '2'};
+            padding: ${!showDate && !showIcon ? '0' : '0 20px'};
+            text-shadow: ${shadowStyle};
+            color: ${textColor};
           }
 
           .right {
-            min-width: 200px;
+            min-width: ${showIcon ? '200px' : '0'};
             text-align: right;
           }
 

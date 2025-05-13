@@ -9,11 +9,21 @@ export default class Announcement extends BaseWidget {
       version: '0.1',
       icon: 'exclamation-triangle',
       defaultData: {
-        text: '',
-        color: '#708090',
+        headline: 'ברוכים הבאים לחיל החימוש 20',
+        iconUrl: 'https://th.bing.com/th/id/OIP.vL-OqvfwluEegJV6KunAugHaHa?w=188&h=187&c=7&r=0&o=5&pid=1.7',
+        gradientStart: 'rgb(26, 37, 69)',
+        gradientEnd: '#00c2ff',
         textColor: '#ffffff',
-        titleColor: '#fff0f0',
-        accentColor: '#EDC951'
+        dateColor: '#ffffff',
+        timeColor: '#ffffff',
+        showIcon: true,
+        showDate: true,
+        textShadow: true,
+        fontSize: {
+          headline: 36,
+          time: 36,
+          date: 15
+        }
       }
     })
   }
