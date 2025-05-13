@@ -91,7 +91,7 @@ const ShabbatContent = () => {
           left: 0;
           width: 100%;
           height: 100%;
-          background-image: url('https://www.jdn.co.il/wp-content/uploads/2022/02/%D7%A0%D7%A8-%D7%A0%D7%A9%D7%9E%D7%94-%D7%92%D7%99%D7%A3.gif');
+          background-image: url('https://th.bing.com/th/id/OIG4.oYFShusZt_rUpzLhRK8T?w=1024&h=1024&rs=1&pid=ImgDetMain');
           background-size: cover;
           background-position: center;
           z-index: -1;
@@ -99,10 +99,14 @@ const ShabbatContent = () => {
         }
 
         .title {
+          width: 100%;
+          text-align: center;
+          margin-left: auto;
+          margin-right: auto;
           font-size: 36px;
           font-weight: bold;
-          margin-top: 10px;
-          margin-bottom: 30px;
+          margin-top: 0px;
+          margin-bottom: 95px;
           color: #fff;
           text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
         }
@@ -110,12 +114,12 @@ const ShabbatContent = () => {
         .times {
           display: flex;
           flex-direction: column;
-          gap: 15px;
+          gap: 4px;
           align-items: flex-start;
-          background: rgba(0, 0, 0, 0.7);
+          background: rgba(31, 29, 29, 0.7);
           padding: 20px 30px;
           border-radius: 15px;
-          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 6px 12px rgba(59, 51, 51, 0.5);
         }
 
         .time-item {

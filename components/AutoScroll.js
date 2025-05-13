@@ -2,7 +2,7 @@ import React from 'react'
 
 class AutoScroll extends React.Component {
   render() {
-    const { children, style = {}, duration = 45 } = this.props
+    const { children, style = {}, duration = 90 } = this.props
     const speed = `${duration}s`
 
     return (
@@ -39,10 +39,10 @@ class AutoScroll extends React.Component {
 
           @keyframes scroll {
             0% {
-              transform: translateX(5%);
+              transform: translateX(0%);
             }
             100% {
-              transform: translateX(-45%);
+              transform: translateX(-50%);
             }
           }
 

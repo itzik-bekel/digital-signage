@@ -2,8 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import AutoScroll from '../../../components/AutoScroll'
 
-const DEFAULT_UPDATE_INTERVAL = 60000 // 1 minute
-const DEFAULT_ITEMS_TO_SHOW = 5
+const DEFAULT_UPDATE_INTERVAL = 300000 // 5 minutes
 const CORS_PROXY = 'https://api.allorigins.win/raw?url='
 const RSS_URL = 'https://www.ynet.co.il/Integration/StoryRss1854.xml'
 
@@ -11,20 +10,25 @@ class RssContent extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      news: []
+      news: [],
+      isLoading: true
     }
   }
 
+  processTitleText = (title) => {
+    // Replace regular quotes with Hebrew quotes
+    return title.replace(/["]/g, '״')
+  }
+
   fetchNews = async () => {
-    const { data = {} } = this.props
-    const { itemsToShow = DEFAULT_ITEMS_TO_SHOW } = data
+    this.setState({ isLoading: true })
     try {
       const response = await axios.get(CORS_PROXY + encodeURIComponent(RSS_URL))
       const parser = new DOMParser()
       const xmlDoc = parser.parseFromString(response.data, 'text/xml')
       const items = xmlDoc.querySelectorAll('item')
+      
       const newsItems = Array.from(items)
-        .slice(0, itemsToShow)
         .map(item => {
           const pubDate = new Date(item.querySelector('pubDate').textContent)
           const time = pubDate.toLocaleTimeString('he-IL', {
@@ -33,13 +37,20 @@ class RssContent extends React.Component {
             hour12: false
           })
           return {
-            title: item.querySelector('title').textContent,
-            time
+            title: this.processTitleText(item.querySelector('title').textContent),
+            time,
+            pubDate
           }
         })
-      this.setState({ news: newsItems })
+        .sort((a, b) => b.pubDate - a.pubDate)
+
+      this.setState({ 
+        news: newsItems,
+        isLoading: false
+      })
     } catch (error) {
       console.error('Error fetching RSS:', error)
+      this.setState({ isLoading: false })
     }
   }
 
@@ -64,7 +75,15 @@ class RssContent extends React.Component {
       fontSize = 16,
       widgetHeight = 100
     } = data
-    const { news } = this.state
+    const { news, isLoading } = this.state
+
+    if (isLoading) {
+      return (
+        <div className="rss-widget loading" style={{ height: `${widgetHeight}px` }}>
+          טוען חדשות...
+        </div>
+      )
+    }
 
     return (
       <div className="rss-widget" style={{ height: `${widgetHeight}px` }}>
@@ -72,11 +91,14 @@ class RssContent extends React.Component {
           <img src="https://www.ynet.co.il/images/favicon/favicon_1.ico" alt="Ynet" />
         </div>
         <div className="content-wrapper">
-          <AutoScroll style={{ display: 'flex', whiteSpace: 'nowrap', alignItems: 'center', minHeight: '100%' }}>
+          <AutoScroll 
+            style={{ display: 'flex', whiteSpace: 'nowrap', alignItems: 'center', minHeight: '100%' }}
+            duration={240} // 4 minutes for full cycle
+          >
             {news.map((item, index) => (
               <div key={index} className="news-item">
-                <h3>{item.title}</h3>
                 <span className="news-time">{item.time}</span>
+                <h3>{item.title}</h3>
               </div>
             ))}
           </AutoScroll>
@@ -93,17 +115,28 @@ class RssContent extends React.Component {
             align-items: center;
             justify-content: center;
           }
+
+          .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-family: 'Heebo', sans-serif;
+          }
+
           .ynet-logo {
             position: absolute;
             top: 10px;
             right: 10px;
             z-index: 2;
           }
+
           .ynet-logo img {
             width: 24px;
             height: 24px;
             filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
           }
+
           .content-wrapper {
             width: 100%;
             height: 100%;
@@ -112,31 +145,38 @@ class RssContent extends React.Component {
             align-items: center;
             justify-content: center;
           }
+
           .news-item {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
+            gap: 15px;
+            direction: rtl;
             margin-right: 80px;
             padding: 0 30px;
             border-right: 2px solid rgba(255, 255, 255, 0.2);
             white-space: nowrap;
             min-height: 100%;
           }
+
           .news-item:last-child {
             border-right: none;
           }
+
           .news-time {
             color: #ff0000;
             font-weight: bold;
-            margin-left: 15px;
             font-size: ${fontSize}px;
+            white-space: nowrap;
+            order: 1;
           }
+
           h3 {
             font-size: ${fontSize}px;
             margin: 0;
             font-weight: 500;
             line-height: 1.2;
-            text-align: center;
+            text-align: right;
+            order: 2;
           }
         `}</style>
       </div>
