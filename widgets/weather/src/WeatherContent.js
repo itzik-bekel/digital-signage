@@ -49,7 +49,14 @@ const WeatherContent = () => {
       if (existingScript) {
         existingScript.remove()
       }
-      delete window.__weatherwidget_init
+      // Safe cleanup of weather widget init
+      if (window && window.__weatherwidget_init) {
+        try {
+          window.__weatherwidget_init = undefined
+        } catch (e) {
+          console.warn('Could not clean up weather widget:', e)
+        }
+      }
     }
   }, [])
 
