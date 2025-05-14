@@ -1,206 +1,184 @@
-import React, { Component } from 'react'
-import { Form, Input, InlineInputGroup, Button } from '../../../components/Form'
-
+import React, { useState, useEffect } from 'react'
+import { Form, Input, Button, InlineInputGroup } from '../../../components/Form'
 import ListContent from './ListContent'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
-class ListOptions extends Component {
-  constructor(props) {
-    super(props)
-    const { title, color, textColor, list = [] } = props.data || {}
-    this.state = {
-      title,
-      color,
-      textColor,
-      list
-    }
-  }
-  handleChange = (name, value) => {
-    const { onChange = () => {} } = this.props
-    this.setState(
-      {
-        [name]: value
-      },
-      () => {
-        onChange(this.state)
-      }
-    )
+const MAX_COLS = 34
+
+const ListOptions = ({ data: initialData = {}, onChange = () => {} }) => {
+  const [data, setData] = useState(initialData)
+
+  useEffect(() => {
+    onChange(data)
+  }, [data])
+
+  const handleGlobalChange = (name, value) => {
+    setData(prev => ({ ...prev, [name]: value }))
   }
 
-  elementTextChange = (index, value) => {
-    const { onChange = () => {} } = this.props
-    this.state.list[index].text = value
-    this.setState(
-      {
-        list: this.state.list
-      },
-      () => {
-        onChange(this.state)
-      }
-    )
-  }
-
-  elementLabelChange = (index, value) => {
-    const { onChange = () => {} } = this.props
-    this.state.list[index].label = value
-    this.setState(
-      {
-        list: this.state.list
-      },
-      () => {
-        onChange(this.state)
-      }
-    )
-  }
-
-  addEntry = () => {
-    this.setState({
-      list: [...this.state.list, { text: '', label: null }]
+  const handleTableChange = (tableIdx, field, value) => {
+    setData(prev => {
+      const tables = [...prev.tables]
+      tables[tableIdx][field] = value
+      return { ...prev, tables }
     })
+  }
 
+  const handlePersonChange = (tableIdx, personIdx, field, value) => {
+    setData(prev => {
+      const tables = [...prev.tables]
+      tables[tableIdx].people[personIdx][field] = value
+      return { ...prev, tables }
+    })
+  }
+
+  const addTable = () => {
+    setData(prev => ({
+      ...prev,
+      tables: [...prev.tables, { title: '', people: [] }]
+    }))
     return Promise.resolve()
   }
-  deleteEntry = index => {
-    const { onChange = () => {} } = this.props
-    this.setState(
-      {
-        list: this.state.list.filter((el, i) => i != index)
-      },
-      () => {
-        onChange(this.state)
+
+  const deleteTable = idx => {
+    setData(prev => ({
+      ...prev,
+      tables: prev.tables.filter((_, i) => i !== idx)
+    }))
+    return Promise.resolve()
+  }
+
+  const addPerson = tableIdx => {
+    setData(prev => {
+      const tables = [...prev.tables]
+      if (tables[tableIdx].people.length < MAX_COLS) {
+        tables[tableIdx].people.push({
+          apt: tables[tableIdx].people.length + 1,
+          name: '',
+          missing: ''
+        })
       }
-    )
+      return { ...prev, tables }
+    })
     return Promise.resolve()
   }
 
-  render() {
-    const { title, color, textColor, list = [] } = this.state
-    return (
-      <div className={'container'}>
-        <Form>
-          <h3>Widget: List</h3>
-          <p>Choose your preferences for the list widget.</p>
-          <InlineInputGroup>
-            <Input
-              inline={false}
-              label={'Widget title'}
-              type={'text'}
-              name={'title'}
-              value={title}
-              placeholder={'Optional title...'}
-              onChange={this.handleChange}
-            />
-            <Input
-              inline={false}
-              label={'Background color'}
-              type={'color'}
-              name={'color'}
-              value={color}
-              onChange={this.handleChange}
-            />
-            <Input
-              inline={false}
-              label={'Text color'}
-              type={'color'}
-              name={'textColor'}
-              value={textColor}
-              onChange={this.handleChange}
-            />
-          </InlineInputGroup>
-          <hr className='separator' />
-          <span className='subheader'>Element List</span>
-          <div className='list'>
-            {list.map(({ label, text }, index) => (
-              <InlineInputGroup>
+  const deletePerson = (tableIdx, personIdx) => {
+    setData(prev => {
+      const tables = [...prev.tables]
+      tables[tableIdx].people = tables[tableIdx].people.filter((_, i) => i !== personIdx)
+      return { ...prev, tables }
+    })
+    return Promise.resolve()
+  }
+
+  return (
+    <div className="container">
+      <Form>
+        <h3>List Widget Options</h3>
+        <Input
+          label="Rotation Seconds"
+          type="number"
+          min={0}
+          max={60}
+          value={data.rotationSec}
+          onChange={(name, value) => handleGlobalChange('rotationSec', parseInt(value, 10))}
+        />
+        <InlineInputGroup>
+          <Input
+            label="Background Color"
+            type="color"
+            value={data.color}
+            onChange={(name, value) => handleGlobalChange('color', value)}
+          />
+          <Input
+            label="Text Color"
+            type="color"
+            value={data.textColor}
+            onChange={(name, value) => handleGlobalChange('textColor', value)}
+          />
+        </InlineInputGroup>
+
+        {data.tables.map((table, tableIdx) => (
+          <div key={`table-${tableIdx}`} className="table-editor">
+            <InlineInputGroup>
+              <Input
+                label={`Table ${tableIdx + 1} Title`}
+                value={table.title}
+                onChange={(name, value) => handleTableChange(tableIdx, 'title', value)}
+              />
+              <Button
+                color="#e74c3c"
+                text="Delete Table"
+                onClick={() => deleteTable(tableIdx)}
+              />
+            </InlineInputGroup>
+
+            {table.people.map((person, personIdx) => (
+              <InlineInputGroup key={`person-${personIdx}`}>
                 <Input
-                  inline={false}
-                  name={index}
-                  value={text}
-                  onChange={this.elementTextChange}
-                  placeholder={'Write some text...'}
-                  expand
+                  label={`Apt ${person.apt} Name`}
+                  value={person.name}
+                  onChange={(name, value) => handlePersonChange(tableIdx, personIdx, 'name', value)}
                 />
                 <Input
-                  inline={false}
-                  name={index}
-                  value={label}
-                  onChange={this.elementLabelChange}
-                  placeholder={'Label...'}
-                  expand={false}
+                  label="Missing Months"
+                  value={person.missing}
+                  onChange={(name, value) => handlePersonChange(tableIdx, personIdx, 'missing', value)}
                 />
-                <div className={'deleteBtn'}>
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    fixedWidth
-                    color='#828282'
-                    onClick={() => this.deleteEntry(index)}
-                  />
-                </div>
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  color="#e74c3c"
+                  onClick={() => deletePerson(tableIdx, personIdx)}
+                />
               </InlineInputGroup>
             ))}
+
+            {table.people.length < MAX_COLS && (
+              <Button
+                color="#2ecc71"
+                text="+ Add Person"
+                onClick={() => addPerson(tableIdx)}
+              />
+            )}
           </div>
-          <Button
-            text={' + Add Entry'}
-            color={'#8bc34a'}
-            onClick={this.addEntry}
-            style={{ margin: 0 }}
-          />
-        </Form>
-        <div className={'previewContainer'}>
-          <p>Preview</p>
-          <div className={'preview'}>
-            <ListContent data={this.state} />
-          </div>
+        ))}
+
+        <Button color="#3498db" text="+ Add Table" onClick={addTable} />
+      </Form>
+
+      <div className="previewContainer">
+        <p>Preview</p>
+        <div className="preview">
+          <ListContent data={data} />
         </div>
-        <style jsx>
-          {`
-            h3,
-            p {
-              font-family: 'Open Sans', sans-serif;
-            }
-            .container {
-              display: flex;
-              flex-direction: row;
-            }
-            .preview {
-              display: block;
-              width: 240px;
-              height: 240px;
-              border-radius: 6px;
-              overflow: hidden;
-            }
-            .previewContainer {
-              margin-left: 16px;
-              width: 240px;
-            }
-            .deleteBtn {
-              padding: 8px;
-              display: flex;
-              flex-direction: column;
-              min-height: 40px;
-              justify-content: center;
-              align-items: center;
-            }
-            .separator {
-              border: none;
-              border-bottom: 1px solid #ededed;
-              width: 100%;
-            }
-            .subheader {
-              margin-right: 16px;
-              color: #666666;
-              font-family: 'Open Sans', sans-serif;
-              font-weight: 600;
-              display: inline-block;
-              padding-top: 16px;
-              padding-bottom: 16px;
-            }
-          `}
-        </style>
       </div>
-    )
-  }
+
+      <style jsx>{`
+        .container {
+          display: flex;
+          flex-direction: row;
+        }
+        .previewContainer {
+          margin-left: 16px;
+          width: 240px;
+        }
+        .preview {
+          width: 240px;
+          height: 240px;
+          overflow: hidden;
+          border-radius: 6px;
+        }
+        .table-editor {
+          margin-top: 16px;
+          padding: 8px;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+        }
+      `}</style>
+    </div>
+  )
 }
 
 export default ListOptions
