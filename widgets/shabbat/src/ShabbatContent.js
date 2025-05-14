@@ -91,7 +91,7 @@ const ShabbatContent = () => {
           left: 0;
           width: 100%;
           height: 100%;
-          background-image: url('https://th.bing.com/th/id/OIG4.oYFShusZt_rUpzLhRK8T?w=1024&h=1024&rs=1&pid=ImgDetMain');
+          background-image: url('https://th.bing.com/th/id/OIP.pZTNhF73x-ZZUJwiyFPDjAHaFd?w=230&h=180&c=7&r=0&o=5&pid=1.7');
           background-size: cover;
           background-position: center;
           z-index: -1;
@@ -102,7 +102,7 @@ const ShabbatContent = () => {
           width: 100%;
           text-align: center;
           margin-left: auto;
-          margin-right: auto;
+          margin-right: 20px;
           font-size: 36px;
           font-weight: bold;
           margin-top: 0px;
@@ -126,7 +126,7 @@ const ShabbatContent = () => {
           display: flex;
           justify-content: space-between;
           width: 100%;
-          max-width: 350px;
+          max-width: 200px;
           font-size: 20px;
           font-weight: 600;
           color: #fff;
