@@ -16,7 +16,6 @@ class RssContent extends React.Component {
   }
 
   processTitleText = (title) => {
-    // Replace regular quotes with Hebrew quotes
     return title.replace(/["]/g, '״')
   }
 
@@ -72,7 +71,8 @@ class RssContent extends React.Component {
     const {
       textColor = '#ffffff',
       backgroundColor = '#2d3436',
-      fontSize = 16,
+      fontSize = 32,
+      timeSize = 22,
       widgetHeight = 100
     } = data
     const { news, isLoading } = this.state
@@ -92,13 +92,18 @@ class RssContent extends React.Component {
         </div>
         <div className="content-wrapper">
           <AutoScroll 
-            style={{ display: 'flex', whiteSpace: 'nowrap', alignItems: 'center', minHeight: '100%' }}
-            duration={240} // 4 minutes for full cycle
+            style={{ 
+              display: 'flex', 
+              whiteSpace: 'nowrap', 
+              alignItems: 'center', 
+              minHeight: '100%'
+            }}
+            duration={240}
           >
             {news.map((item, index) => (
               <div key={index} className="news-item">
                 <span className="news-time">{item.time}</span>
-                <h3>{item.title}</h3>
+                <span className="news-title" style={{ fontSize: `${timeSize}px` }}>{item.title}</span>
               </div>
             ))}
           </AutoScroll>
@@ -120,20 +125,20 @@ class RssContent extends React.Component {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 36px;
             font-family: 'Heebo', sans-serif;
           }
 
           .ynet-logo {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 0px;  // Moved up for better alignment
+            right: 15px;
             z-index: 2;
           }
 
           .ynet-logo img {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
           }
 
@@ -144,17 +149,17 @@ class RssContent extends React.Component {
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0 20px;
           }
 
           .news-item {
             display: inline-flex;
             align-items: center;
-            gap: 15px;
+            gap: 35px;
             direction: rtl;
-            margin-right: 80px;
-            padding: 0 30px;
-            border-right: 2px solid rgba(255, 255, 255, 0.2);
-            white-space: nowrap;
+            margin-right: 140px;
+            padding: 0 50px;
+            border-right: 3px solid rgba(255, 255, 255, 0.3);
             min-height: 100%;
           }
 
@@ -165,18 +170,17 @@ class RssContent extends React.Component {
           .news-time {
             color: #ff0000;
             font-weight: bold;
-            font-size: ${fontSize}px;
+            font-size: ${timeSize}px;
             white-space: nowrap;
-            order: 1;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
           }
 
-          h3 {
-            font-size: ${fontSize}px;
-            margin: 0;
-            font-weight: 500;
-            line-height: 1.2;
+          .news-title {
+            font-weight: 600;
+            line-height: 1.4;
             text-align: right;
-            order: 2;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
           }
         `}</style>
       </div>

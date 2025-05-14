@@ -6,14 +6,15 @@ export default class RssWidget extends BaseWidget {
   constructor() {
     super({
       name: 'RSS Feed',
-      version: '0.1',
-      icon: ['fas', 'rss'], // FontAwesome RSS icon
+      version: '0.2',
+      icon: ['fas', 'rss'],
       defaultData: {
         updateInterval: 300000,
         itemsToShow: 5,
         textColor: '#ffffff',
         backgroundColor: '#2d3436',
-        fontSize: 16
+        fontSize: 32,        // Significantly increased
+        timeSize: 32        // Matched with news text
       }
     })
   }
