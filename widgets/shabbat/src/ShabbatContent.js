@@ -111,17 +111,17 @@ const ShabbatContent = () => {
 
         .times {
           background: rgba(81, 74, 74, 0.7);
-          padding: 20px 30px;
+          padding: 15px 20px;
           border-radius: 15px;
           box-shadow: 0 6px 12px rgba(59, 51, 51, 0.5);
           margin: 0 auto;
-          min-width: 280px;
+          min-width: 220px;
         }
 
         .times-grid {
           display: grid;
-          grid-template-columns: auto 80px;
-          gap: 12px 25px;
+          grid-template-columns: auto 70px;
+          gap: 10px 15px;
           align-items: center;
           color: #fff;
         }

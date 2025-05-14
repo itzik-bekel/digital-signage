@@ -82,14 +82,14 @@ const ListContent = ({ data: rawData = {} }) => {
     <div className="list-widget">
       {title && (
         <h2 className="table-title">
-          {title} ({activePage === 0 ? '1-17' : '18-34'})
+          {title}
         </h2>
       )}
       <div className={`table-wrapper ${isVisible ? 'visible' : 'hidden'}`}>
         <table>
           <thead>
             <tr>
-              <th className="number-header">מס׳</th>
+              <th className="number-header">דירה מס׳</th>
               <th className="name-header">שם</th>
               <th className="status-header">חודשים חסרים</th>
             </tr>
