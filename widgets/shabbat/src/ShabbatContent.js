@@ -58,13 +58,11 @@ const ShabbatContent = () => {
       <div className="background-image"></div>
       <h1 className="title">שׁבת שלום</h1>
       <div className="times">
-        <div className="time-item">
-          <span className="label">הַדְלָקַת נֵרוֹת:</span>
-          <span className="time">&nbsp;&nbsp;{shabbatTimes.candleLighting}</span>
-        </div>
-        <div className="time-item">
-          <span className="label">הַבְדָּלָה:</span>
-          <span className="time">&nbsp;&nbsp;{shabbatTimes.havdalah}</span>
+        <div className="times-grid">
+          <span className="label">כניסת שבת:</span>
+          <span className="time">{shabbatTimes.candleLighting}</span>
+          <span className="label">צאת שבת:</span>
+          <span className="time">{shabbatTimes.havdalah}</span>
         </div>
       </div>
       <style jsx>{`
@@ -112,36 +110,40 @@ const ShabbatContent = () => {
         }
 
         .times {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          align-items: flex-start;
           background: rgba(81, 74, 74, 0.7);
           padding: 20px 30px;
           border-radius: 15px;
           box-shadow: 0 6px 12px rgba(59, 51, 51, 0.5);
-          margin-right: auto;
-          margin-left: 40px;
-          position: relative;
-          right: 20px;
+          margin: 0 auto;
+          min-width: 280px;
         }
 
-        .time-item {
-          display: flex;
-          justify-content: space-between;
-          width: 100%;
-          max-width: 200px;
-          font-size: 20px;
-          font-weight: 600;
+        .times-grid {
+          display: grid;
+          grid-template-columns: auto 80px;
+          gap: 12px 25px;
+          align-items: center;
           color: #fff;
         }
 
         .label {
-          font-weight: bold;
+          font-family: 'Heebo', 'Open Sans', sans-serif;
+          font-size: 24px;
+          font-weight: 600;
+          text-align: right;
+          white-space: nowrap;
+          letter-spacing: 0.5px;
         }
 
         .time {
-          margin-left: auto;
+          font-family: 'Heebo', 'Open Sans', sans-serif;
+          font-size: 24px;
+          font-weight: 500;
+          text-align: left;
+          white-space: nowrap;
+          letter-spacing: 0.5px;
+          color: #ffffff;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
       `}</style>
     </div>
