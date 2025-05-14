@@ -73,7 +73,7 @@ const ShabbatContent = () => {
           height: 100%;
           position: relative;
           color: #fff;
-          padding: 20px;
+          padding: 20px 40px 20px 20px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -116,10 +116,14 @@ const ShabbatContent = () => {
           flex-direction: column;
           gap: 4px;
           align-items: flex-start;
-          background: rgba(31, 29, 29, 0.7);
+          background: rgba(81, 74, 74, 0.7);
           padding: 20px 30px;
           border-radius: 15px;
           box-shadow: 0 6px 12px rgba(59, 51, 51, 0.5);
+          margin-right: auto;
+          margin-left: 40px;
+          position: relative;
+          right: 20px;
         }
 
         .time-item {
