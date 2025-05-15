@@ -18,7 +18,11 @@ export default class List extends BaseWidget {
         tables: [
           {
             title: 'טבלת ברירת מחדל',
-            /* up-to-34 people.  Each object represents 1 column */
+            columnTitles: {
+              apt: 'דירה מס׳',
+              name: 'שם',
+              missing: 'חודשים חסרים'
+            },
             people: [
               /* { apt: 1, name: '', missing: '' } */
             ]

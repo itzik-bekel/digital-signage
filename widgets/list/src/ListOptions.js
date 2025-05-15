@@ -36,7 +36,18 @@ const ListOptions = ({ data: initialData = {}, onChange = () => {} }) => {
   const addTable = () => {
     setData(prev => ({
       ...prev,
-      tables: [...prev.tables, { title: '', people: [] }]
+      tables: [
+        ...prev.tables,
+        {
+          title: '',
+          columnTitles: {
+            apt: 'דירה מס׳',
+            name: 'שם',
+            missing: 'חודשים חסרים'
+          },
+          people: []
+        }
+      ]
     }))
     return Promise.resolve()
   }
@@ -85,54 +96,106 @@ const ListOptions = ({ data: initialData = {}, onChange = () => {} }) => {
           value={data.rotationSec}
           onChange={(name, value) => handleGlobalChange('rotationSec', parseInt(value, 10))}
         />
-        <InlineInputGroup>
-          <Input
-            label="Background Color"
-            type="color"
-            value={data.color}
-            onChange={(name, value) => handleGlobalChange('color', value)}
-          />
-          <Input
-            label="Text Color"
-            type="color"
-            value={data.textColor}
-            onChange={(name, value) => handleGlobalChange('textColor', value)}
-          />
-        </InlineInputGroup>
+        <InlineInputGroup
+          children={[
+            <Input
+              key="bg-color"
+              label="Background Color"
+              type="color"
+              value={data.color}
+              onChange={(name, value) => handleGlobalChange('color', value)}
+            />,
+            <Input
+              key="text-color"
+              label="Text Color"
+              type="color"
+              value={data.textColor}
+              onChange={(name, value) => handleGlobalChange('textColor', value)}
+            />
+          ]}
+        />
 
         {data.tables.map((table, tableIdx) => (
           <div key={`table-${tableIdx}`} className="table-editor">
-            <InlineInputGroup>
-              <Input
-                label={`Table ${tableIdx + 1} Title`}
-                value={table.title}
-                onChange={(name, value) => handleTableChange(tableIdx, 'title', value)}
-              />
-              <Button
-                color="#e74c3c"
-                text="Delete Table"
-                onClick={() => deleteTable(tableIdx)}
-              />
-            </InlineInputGroup>
+            <InlineInputGroup
+              children={[
+                <Input
+                  key="title"
+                  label={`Table ${tableIdx + 1} Title`}
+                  value={table.title}
+                  onChange={(name, value) => handleTableChange(tableIdx, 'title', value)}
+                />
+              ]}
+            />
+            <InlineInputGroup
+              children={[
+                <Input
+                  key="apt"
+                  label="Apt Column Title"
+                  value={(table.columnTitles && table.columnTitles.apt) || 'דירה מס׳'}
+                  onChange={(name, value) =>
+                    handleTableChange(tableIdx, 'columnTitles', {
+                      ...table.columnTitles,
+                      apt: value
+                    })}
+                />,
+                <Input
+                  key="name"
+                  label="Name Column Title"
+                  value={(table.columnTitles && table.columnTitles.name) || 'שם'}
+                  onChange={(name, value) =>
+                    handleTableChange(tableIdx, 'columnTitles', {
+                      ...table.columnTitles,
+                      name: value
+                    })}
+                />,
+                <Input
+                  key="missing"
+                  label="Status Column Title"
+                  value={(table.columnTitles && table.columnTitles.missing) || 'חודשים חסרים'}
+                  onChange={(name, value) =>
+                    handleTableChange(tableIdx, 'columnTitles', {
+                      ...table.columnTitles,
+                      missing: value
+                    })}
+                />
+              ]}
+            />
+            <InlineInputGroup
+              children={[
+                <Button
+                  key="delete"
+                  color="#e74c3c"
+                  text="Delete Table"
+                  onClick={() => deleteTable(tableIdx)}
+                />
+              ]}
+            />
 
             {table.people.map((person, personIdx) => (
-              <InlineInputGroup key={`person-${personIdx}`}>
-                <Input
-                  label={`Apt ${person.apt} Name`}
-                  value={person.name}
-                  onChange={(name, value) => handlePersonChange(tableIdx, personIdx, 'name', value)}
-                />
-                <Input
-                  label="Missing Months"
-                  value={person.missing}
-                  onChange={(name, value) => handlePersonChange(tableIdx, personIdx, 'missing', value)}
-                />
-                <FontAwesomeIcon
-                  icon={faTrash}
-                  color="#e74c3c"
-                  onClick={() => deletePerson(tableIdx, personIdx)}
-                />
-              </InlineInputGroup>
+              <InlineInputGroup
+                key={`person-${personIdx}`}
+                children={[
+                  <Input
+                    key="name"
+                    label={`Apt ${person.apt} Name`}
+                    value={person.name}
+                    onChange={(name, value) => handlePersonChange(tableIdx, personIdx, 'name', value)}
+                  />,
+                  <Input
+                    key="missing"
+                    label="Missing Months"
+                    value={person.missing}
+                    onChange={(name, value) => handlePersonChange(tableIdx, personIdx, 'missing', value)}
+                  />,
+                  <FontAwesomeIcon
+                    key="delete"
+                    icon={faTrash}
+                    color="#e74c3c"
+                    onClick={() => deletePerson(tableIdx, personIdx)}
+                  />
+                ]}
+              />
             ))}
 
             {table.people.length < MAX_COLS && (

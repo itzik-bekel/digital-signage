@@ -16,6 +16,11 @@ const migrateLegacyData = data => {
       tables: [
         {
           title: data.title || '',
+          columnTitles: {
+            apt: 'דירה מס׳',
+            name: 'שם',
+            missing: 'חודשים חסרים'
+          },
           people: data.list.slice(0, MAX_ROWS).map(({ text = '', label = '' }, i) => ({
             apt: i + 1,
             name: text,
@@ -54,8 +59,14 @@ const ListContent = ({ data: rawData = {} }) => {
       setIsVisible(false);
       await new Promise(resolve => setTimeout(resolve, FADE_DURATION));
 
+      const people = (tables[activeTable] && tables[activeTable].people) || [];
+      const needsPaging = people.length > ROWS_PER_PAGE;
+
       // Switch page/table
-      if (activePage === 1) {
+      if (needsPaging && activePage === 1) {
+        setActivePage(0);
+        setActiveTable((activeTable + 1) % tables.length);
+      } else if (!needsPaging) {
         setActivePage(0);
         setActiveTable((activeTable + 1) % tables.length);
       } else {
@@ -72,7 +83,7 @@ const ListContent = ({ data: rawData = {} }) => {
 
   if (!tables.length) return null;
   
-  const { title = '', people = [] } = tables[activeTable];
+  const { title = '', people = [], columnTitles = {} } = tables[activeTable];
   const displayPeople = people.slice(
     activePage * ROWS_PER_PAGE,
     (activePage + 1) * ROWS_PER_PAGE
@@ -89,9 +100,9 @@ const ListContent = ({ data: rawData = {} }) => {
         <table>
           <thead>
             <tr>
-              <th className="number-header">דירה מס׳</th>
-              <th className="name-header">שם</th>
-              <th className="status-header">חודשים חסרים</th>
+              <th className="number-header">{columnTitles.apt || 'דירה מס׳'}</th>
+              <th className="name-header">{columnTitles.name || 'שם'}</th>
+              <th className="status-header">{columnTitles.missing || 'חודשים חסרים'}</th>
             </tr>
           </thead>
           <tbody>

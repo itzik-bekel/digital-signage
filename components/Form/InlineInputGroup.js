@@ -2,11 +2,12 @@ import React from 'react'
 
 class InlineInputGroup extends React.Component {
   render() {
-    const { children = [] } = this.props
+    const { children } = this.props
+    const childrenArray = React.Children.toArray(children)
     return (
       <div className={'inputGroup'}>
-        {children.map((child, index) => (
-          <div key={`input-${index}`} className={index == children.length - 1 ? 'last' : 'notlast'}>
+        {childrenArray.map((child, index) => (
+          <div key={`input-${index}`} className={index === childrenArray.length - 1 ? 'last' : 'notlast'}>
             {child}
           </div>
         ))}
