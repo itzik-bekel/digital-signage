@@ -1,35 +1,48 @@
 const Slideshow = require('../models/Slideshow')
 const CommonHelper = require('./common_helper')
+const blobStorage = require('../../services/blobStorage')
 
-function addSlide(slide, res, next) {
-  return Slideshow.findById(slide.slideshow)
-    .then(slideshow => {
-      if (!slideshow) return next(new Error('Slideshow not saved'))
-      return slide.save().then(slide => {
-        if (!slide) return next(new Error('Slide not saved'))
-        slideshow.slides.push(slide._id)
-        return slideshow.save().then(slideshow => {
-          if (!slideshow) return next(new Error('Slideshow not saved'))
-          return CommonHelper.broadcastUpdate(res.io).then(() => res.json({ success: true }))
-        })
-      })
-    })
-    .catch(err => next(err))
+async function addSlide(slide, res, next) {
+  try {
+    const slideshow = await Slideshow.findById(slide.slideshow)
+    if (!slideshow) return next(new Error('Slideshow not found'))
+
+    const savedSlide = await slide.save()
+    if (!savedSlide) return next(new Error('Slide not saved'))
+
+    slideshow.slides.push(savedSlide._id)
+    const savedSlideshow = await slideshow.save()
+    if (!savedSlideshow) return next(new Error('Slideshow not saved'))
+
+    await CommonHelper.broadcastUpdate(res.io)
+    return res.json({ success: true })
+  } catch (error) {
+    return next(error)
+  }
 }
 
-function deleteSlide(slide, next, res) {
-  return Slideshow.findById(slide.slideshow).then(slideshow => {
+async function deleteSlide(slide, next, res) {
+  try {
+    const slideshow = await Slideshow.findById(slide.slideshow)
     if (!slideshow) return next(new Error('Slideshow not found'))
-    slideshow.slides = slideshow.slides.filter(function(value) {
-      return !slide._id.equals(value)
-    })
-    return slideshow
-      .save()
-      .then(() => CommonHelper.broadcastUpdate(res.io))
-      .then(() => {
-        return res.json({ success: true })
-      })
-  })
+
+    // Delete blob if it exists
+    if (slide.type === 'photo' && slide.blobName) {
+      try {
+        await blobStorage.deleteFile(slide.blobName)
+      } catch (error) {
+        console.error('Failed to delete blob:', error)
+        // Continue with slide deletion even if blob deletion fails
+      }
+    }
+
+    slideshow.slides = slideshow.slides.filter(value => !slide._id.equals(value))
+    await slideshow.save()
+    await CommonHelper.broadcastUpdate(res.io)
+    return res.json({ success: true })
+  } catch (error) {
+    return next(error)
+  }
 }
 
 module.exports = {

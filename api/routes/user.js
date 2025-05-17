@@ -4,12 +4,6 @@ const passport = require('passport')
 
 const User = require('../models/User')
 
-router.get('/demo', function(req, res) {
-  User.register(new User({ username: 'demo' }), 'demo', function() {
-    res.redirect('/')
-  })
-})
-
 router.post('/login', passport.authenticate('local'), function(req, res) {
   res.json({ success: true })
 })

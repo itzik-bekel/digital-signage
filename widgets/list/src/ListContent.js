@@ -195,7 +195,7 @@ const ListContent = ({ data: rawData = {} }) => {
 
         /* Status colors */
         .missing {
-          background: rgba(255, 59, 59, 0.4) !important;
+          background: rgba(45, 61, 136, 0.4) !important;
         }
 
         .paid {

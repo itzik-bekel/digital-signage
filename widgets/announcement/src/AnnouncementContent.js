@@ -121,10 +121,10 @@ class AnnouncementContent extends React.Component {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 14px;
+            padding: 4px 14px;
             background: linear-gradient(90deg, ${gradientStart} 0%, ${gradientEnd} 100%);
             color: ${textColor};
-            height: 80px;
+            height: 70px;
             position: relative;
             z-index: 1;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -158,7 +158,7 @@ class AnnouncementContent extends React.Component {
             text-align: center;
             font-size: ${fontSize.headline}px;
             font-weight: 900;
-            margin: ${!showDate && !showIcon ? '0' : '2'};
+            margin: ${!showDate && !showIcon ? '0' : '-4px 2px'};
             padding: ${!showDate && !showIcon ? '0' : '0 20px'};
             text-shadow: ${shadowStyle};
             color: ${textColor};

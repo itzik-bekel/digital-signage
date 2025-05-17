@@ -18,9 +18,10 @@ const handle = routes.getRequestHandler(app)
 const apiRoutes = require('./api/routes')
 const User = require('./api/models/User')
 
+
 app
   .prepare()
-  .then(() => {
+  .then(async () => {
     const server = express()
 
     // Allows for cross origin domain request:
@@ -30,14 +31,54 @@ app
       next()
     })
 
-    // MongoDB
-    mongoose.Promise = Promise
-    mongoose.connect(
-      Keys.MONGODB_URI,
-      { useNewUrlParser: true }
-    )
+    // MongoDB Connection Setup
+    mongoose.Promise = global.Promise
+
+    // Configure MongoDB connection options for Azure Cosmos DB
+    const mongoOptions = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      ssl: true,
+      retryWrites: false,
+      // Connection settings
+      maxPoolSize: 1,
+      // Timeouts
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 360000,  // 6 minutes
+      // Keep-alive settings
+      keepAlive: true,
+      keepAliveInitialDelay: 300000
+    }
+
+    try {
+      await mongoose.connect(Keys.MONGODB_URI, mongoOptions)
+      console.log('MongoDB connected successfully')
+
+      // Check for existing users and create default if none exist
+      const userCount = await User.countDocuments()
+      if (userCount === 0) {
+        console.log('No users found. Creating default user...')
+        try {
+          await User.register(new User({ username: 'helhimush20' }), 'helhimush20!')
+          console.log('Default user created successfully')
+        } catch (userErr) {
+          console.error('Error creating default user:', userErr)
+        }
+      } else {
+        console.log('Existing users found:', userCount)
+      }
+    } catch (err) {
+      console.error('MongoDB connection error:', err)
+      process.exit(1)
+    }
+    
     const db = mongoose.connection
-    db.on('error', console.error.bind(console, 'connection error:'))
+    db.on('error', err => {
+      console.error('MongoDB error:', err)
+    })
+    db.on('disconnected', () => {
+      console.log('MongoDB disconnected')
+    })
 
     // Parse application/x-www-form-urlencoded
     server.use(bodyParser.urlencoded({ extended: false }))
@@ -70,9 +111,6 @@ app
 
     // API routes
     server.use('/api/v1', apiRoutes)
-
-    // Static routes
-    server.use('/uploads', express.static('uploads'))
 
     // Next.js routes
     server.get('*', (req, res) => {

@@ -27,7 +27,16 @@ Use the demo website at [http://digitaldisplay.herokuapp.com](http://digitaldisp
 
 1. Set up a MongoDB installation locally (or in the cloud) and create a `digitaldisplay` database
 
-2. Run the setup utility using
+2. Configure Azure Blob Storage:
+   - For local development:
+     - Create an Azure Storage account and container
+     - Get the connection string and add it to .env as AZURE_STORAGE_CONNECTION_STRING
+   - For production (Azure Web App):
+     - Enable system-assigned managed identity
+     - Grant Blob Data Contributor role to the managed identity
+     - Set AZURE_STORAGE_ACCOUNT_NAME and AZURE_STORAGE_CONTAINER_NAME in app settings
+
+3. Run the setup utility using
 
 ```bash
 npm run setup
@@ -53,6 +62,10 @@ which pulls the latest stable version of `digital-signage` from github, installs
 
 ### Features
 
+- ✅ Cloud-native storage with Azure Blob Storage
+  - Managed Identity support for Azure Web App
+  - Local development with connection string
+  - Stateless application design
 - ✅ Automatic refresh on content change (you should never need to touch a display once set up!)
 - ✅ Totally modular, with a comprehensive widget management system (adding a widget is very simple!)
 - ✅ Multiple built-in widgets to get you started:
