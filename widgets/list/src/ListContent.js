@@ -21,8 +21,8 @@ const migrateLegacyData = data => {
             name: 'שם',
             missing: 'חודשים חסרים'
           },
-          people: data.list.slice(0, MAX_ROWS).map(({ text = '', label = '' }, i) => ({
-            apt: i + 1,
+          people: data.list.slice(0, MAX_ROWS).map(({ text = '', label = '', apt = '' }, i) => ({
+            apt: apt || (i + 1).toString(),
             name: text,
             missing: label || ''
           }))
@@ -84,10 +84,10 @@ const ListContent = ({ data: rawData = {} }) => {
   if (!tables.length) return null;
   
   const { title = '', people = [], columnTitles = {} } = tables[activeTable];
-  const displayPeople = people.slice(
-    activePage * ROWS_PER_PAGE,
-    (activePage + 1) * ROWS_PER_PAGE
-  );
+  // Sort people by apartment number and slice for current page
+  const displayPeople = [...people]
+    .sort((a, b) => parseInt(a.apt) - parseInt(b.apt))
+    .slice(activePage * ROWS_PER_PAGE, (activePage + 1) * ROWS_PER_PAGE);
 
   return (
     <div className="list-widget">

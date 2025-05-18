@@ -64,15 +64,33 @@ const ListOptions = ({ data: initialData = {}, onChange = () => {} }) => {
     setData(prev => {
       const tables = [...prev.tables]
       if (tables[tableIdx].people.length < MAX_COLS) {
+        const existingApts = tables[tableIdx].people.map(p => parseInt(p.apt));
+        let newApt = 1;
+        while (existingApts.includes(newApt)) {
+          newApt++;
+        }
         tables[tableIdx].people.push({
-          apt: tables[tableIdx].people.length + 1,
+          apt: newApt,
           name: '',
           missing: ''
         })
+        // Sort people by apartment number
+        tables[tableIdx].people.sort((a, b) => parseInt(a.apt) - parseInt(b.apt));
       }
       return { ...prev, tables }
     })
     return Promise.resolve()
+  }
+
+  const validateAptNumber = (tableIdx, personIdx, value) => {
+    const aptNum = parseInt(value);
+    if (isNaN(aptNum) || aptNum < 1) return false;
+    
+    const existingApts = data.tables[tableIdx].people
+      .filter((_, idx) => idx !== personIdx)
+      .map(p => parseInt(p.apt));
+    
+    return !existingApts.includes(aptNum);
   }
 
   const deletePerson = (tableIdx, personIdx) => {
@@ -175,13 +193,31 @@ const ListOptions = ({ data: initialData = {}, onChange = () => {} }) => {
             {table.people.map((person, personIdx) => (
               <InlineInputGroup
                 key={`person-${personIdx}`}
-                children={[
-                  <Input
-                    key="name"
-                    label={`Apt ${person.apt} Name`}
-                    value={person.name}
-                    onChange={(name, value) => handlePersonChange(tableIdx, personIdx, 'name', value)}
-                  />,
+              children={[
+                <Input
+                  key="apt"
+                  label="Apt №"
+                  type="number"
+                  min="1"
+                  value={person.apt}
+                  onChange={(name, value) => {
+                    if (validateAptNumber(tableIdx, personIdx, value)) {
+                      handlePersonChange(tableIdx, personIdx, 'apt', value);
+                      // Re-sort after apartment number change
+                      setData(prev => {
+                        const tables = [...prev.tables];
+                        tables[tableIdx].people.sort((a, b) => parseInt(a.apt) - parseInt(b.apt));
+                        return { ...prev, tables };
+                      });
+                    }
+                  }}
+                />,
+                <Input
+                  key="name"
+                  label="Name"
+                  value={person.name}
+                  onChange={(name, value) => handlePersonChange(tableIdx, personIdx, 'name', value)}
+                />,
                   <Input
                     key="missing"
                     label="Missing Months"

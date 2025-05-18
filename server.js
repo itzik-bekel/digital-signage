@@ -34,14 +34,14 @@ app
     // MongoDB Connection Setup
     mongoose.Promise = global.Promise
 
-    // Configure MongoDB connection options for Azure Cosmos DB
+    // Configure MongoDB connection options
     const mongoOptions = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      ssl: true,
-      retryWrites: false,
+      ssl: Keys.ENVIRON === 'PROD',  // Only use SSL in production
+      retryWrites: Keys.ENVIRON === 'PROD' ? false : true,  // Disable retryWrites only in prod (for Cosmos DB)
       // Connection settings
-      maxPoolSize: 1,
+      maxPoolSize: Keys.ENVIRON === 'PROD' ? 1 : 10,  // Lower pool size for Cosmos DB
       // Timeouts
       connectTimeoutMS: 30000,
       socketTimeoutMS: 360000,  // 6 minutes
